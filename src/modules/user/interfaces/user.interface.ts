@@ -9,11 +9,11 @@ export interface UserInterface {
   type: UserType;
   role: RoleType;
   phone: string;
-  birth_date: Date | null;
+  birthDate: Date | null;
   address: string | null;
   gender: Gender | null;
   salt: string;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
 }

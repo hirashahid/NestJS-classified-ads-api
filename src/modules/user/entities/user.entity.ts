@@ -40,8 +40,8 @@ export class User implements UserInterface {
   @Column({ type: 'varchar', length: 50 })
   phone: string;
 
-  @Column({ type: 'date', nullable: true })
-  birth_date: Date;
+  @Column({ type: 'date', nullable: true, name: 'birth_date' })
+  birthDate: Date;
 
   @Column({ type: 'enum', enum: Gender, nullable: true })
   gender: Gender;
@@ -52,14 +52,14 @@ export class User implements UserInterface {
   @Column({ type: 'varchar', length: 96, nullable: true })
   salt: string;
 
-  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
+  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP', name: 'created_at' })
+  createdAt: Date;
 
-  @UpdateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
-  updated_at: Date;
+  @UpdateDateColumn({ default: () => 'CURRENT_TIMESTAMP', name: 'updated_at' })
+  updatedAt: Date;
 
-  @DeleteDateColumn({ nullable: true })
-  deleted_at: Date;
+  @DeleteDateColumn({ nullable: true, name: 'deleted_at' })
+  deletedAt: Date;
 
   @BeforeInsert()
   generateUUID() {
