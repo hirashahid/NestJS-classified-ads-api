@@ -12,5 +12,5 @@ export default registerAs<DatabaseConfig>('database', () => ({
   name: process.env.DATABASE_NAME,
   username: process.env.DATABASE_USERNAME,
   synchronize: process.env.DATABASE_SYNCHRONIZE === 'true',
-  logging: process.env.NODE_ENVIRONMENT === 'production' ? false : true,
+  logging: process.env.NODE_ENVIRONMENT !== 'production',
 }));
