@@ -2,30 +2,38 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-
-import { AppController } from '@app/app.controller';
-import { AppService } from '@app/app.service';
-import databaseConfig from '@app/config/database.config';
-import { TypeOrmConfigService } from '@app/database/typeorm-config.service';
 import { DatabaseModule } from '@app/modules/database/database.module';
 import { UserModule } from '@app/modules/user/user.module';
 import { AuthModule } from '@app/modules/auth/auth.module';
 import jwtConfig from '@app/config/jwt.config';
 import { CustomExceptionFilter } from '@app/filters/global-exception.filter';
+import { AppController } from '@app/app.controller';
+import { AppService } from '@app/app.service';
+import { DestinationsModule } from '@app/modules/destination/destination.module';
+import { postgresConfig } from '@app/config/postgres/database.config';
+import { mongoConfig } from '@app/config/mongo/database.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, jwtConfig],
+      load: [jwtConfig],
       envFilePath: ['.env'],
     }),
+    // PRIMARY DB CONNECTION
     TypeOrmModule.forRootAsync({
-      useClass: TypeOrmConfigService,
+      useFactory: () => postgresConfig,
+    }),
+
+    // SECONDARY DB CONNECTION
+    TypeOrmModule.forRootAsync({
+      name: 'secondaryDB',
+      useFactory: () => mongoConfig,
     }),
     DatabaseModule,
     UserModule,
     AuthModule,
+    DestinationsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService, CustomExceptionFilter],
