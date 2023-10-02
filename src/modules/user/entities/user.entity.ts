@@ -7,11 +7,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-import { UserInterface } from '../interfaces/user.interface';
-import { GeneratorProvider } from 'src/providers/generator.provider';
-import { Gender, RoleType, UserType } from '../constants/user';
 import { IsEmail } from 'class-validator';
+
+import { UserInterface } from '@app/modules/user/interfaces/user.interface';
+import { GeneratorProvider } from '@app/providers/generator.provider';
+import { Gender, RoleType, UserType } from '@app/modules/user/constants/user';
 
 @Entity({ name: 'users' })
 export class User implements UserInterface {
@@ -25,10 +25,10 @@ export class User implements UserInterface {
   name: string;
 
   @Column({ type: 'varchar', length: 145 })
-  @IsEmail({}, { message: 'Invalid email format' }) // Apply email validation with a regex pattern
+  @IsEmail({}, { message: 'Invalid email format' })
   email: string;
 
-  @Column({ type: 'text', select: false })
+  @Column({ type: 'text' })
   password: string;
 
   @Column({ type: 'enum', enum: UserType })

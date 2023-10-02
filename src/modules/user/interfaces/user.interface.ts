@@ -1,4 +1,4 @@
-import { UserType, Gender, RoleType } from '../constants/user';
+import { UserType, Gender, RoleType } from '@app/modules/user/constants/user';
 
 export interface UserInterface {
   id: number;

@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 config();
 
 export default new DataSource({
-  type: 'mysql',
+  type: 'postgres',
   host:
     process.env.NODE_ENVIRONMENT == 'development'
       ? '127.0.0.1'
