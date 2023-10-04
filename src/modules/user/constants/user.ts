@@ -1,16 +1,16 @@
 export enum Gender {
-  MALE = 'male',
-  FEMALE = 'female',
+  MALE = 'Male',
+  FEMALE = 'Female'
 }
 
 export enum UserType {
-  ADMIN = 'admin',
-  MEMBER = 'member',
+  ADMIN = 'Admin',
+  MEMBER = 'Member',
 }
 
 export enum RoleType {
-  BUYER = 'buyer',
-  SELLER = 'seller',
-  INSPECTOR = 'inspector',
-  SUPERADMIN = 'super admin',
+  BUYER = 'Buyer',
+  SELLER = 'Seller',
+  INSPECTOR = 'Inspector',
+  SUPERADMIN = 'SuperAdmin',
 }

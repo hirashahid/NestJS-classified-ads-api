@@ -7,13 +7,16 @@ import { AuthService } from '@app/modules/auth/services/auth.service';
 import { UserAuthService } from '@app/modules/user/services/user-auth.service';
 import { User } from '@app/modules/user/entities/user.entity';
 import { jwtFactory } from '@app/modules/auth/config/jwt.config';
+import { PostgresPrismaService } from '@app/database/postgres-prisma.service';
+import { DatabaseModule } from '@app/database/database.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync(jwtFactory),
+    DatabaseModule
   ],
   providers: [AuthService, UserAuthService],
   controllers: [AuthController],
 })
-export class AuthModule {}
+export class AuthModule { }

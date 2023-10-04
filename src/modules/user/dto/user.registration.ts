@@ -51,11 +51,10 @@ export class UserRegistrationDto {
 
   @IsString()
   @IsNotEmpty()
-  @IsDateString()
   @Matches(/^\d{4}-\d{2}-\d{2}$/, {
     message: 'birthDate must be in YYYY-MM-DD format',
   })
-  birthDate: Date;
+  birthDate: string;
 
   @IsString()
   @IsOptional()

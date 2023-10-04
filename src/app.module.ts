@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { DatabaseModule } from '@app/modules/database/database.module';
 import { UserModule } from '@app/modules/user/user.module';
 import { AuthModule } from '@app/modules/auth/auth.module';
 import jwtConfig from '@app/config/jwt.config';
@@ -12,6 +11,7 @@ import { AppService } from '@app/app.service';
 import { DestinationsModule } from '@app/modules/destination/destination.module';
 import { postgresConfig } from '@app/config/postgres/database.config';
 import { mongoConfig } from '@app/config/mongo/database.config';
+import { DatabaseModule } from '@app/database/database.module';
 
 @Module({
   imports: [
@@ -38,4 +38,4 @@ import { mongoConfig } from '@app/config/mongo/database.config';
   controllers: [AppController],
   providers: [AppService, JwtService, CustomExceptionFilter],
 })
-export class AppModule {}
+export class AppModule { }

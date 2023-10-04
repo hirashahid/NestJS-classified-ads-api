@@ -1,33 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 
 import { UserRegistrationDto } from '@app/modules/user/dto/user.registration';
-import { User } from '@app/modules/user/entities/user.entity';
 import { errorMessages } from '@app/common/constants/errorMessages';
 import { UserSerialization } from '@app/modules/auth/serialization/user.serialization';
 import {
   EmailAlreadyExistsException,
   NotFoundException,
 } from '@app/exceptions/custom.exception';
+import { PostgresPrismaService } from '@app/database/postgres-prisma.service';
+import { GeneratorProvider } from '@app/providers/generator.provider';
 
 @Injectable()
 export class UserAuthService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
+    private readonly prisma: PostgresPrismaService
+  ) { }
 
   async registration(userRegistrationDto: UserRegistrationDto) {
     const { phone, email } = userRegistrationDto;
 
     //check if email or phone is already registered
     const [phoneExists, emailExists] = await Promise.all([
-      this.userRepository.count({ where: { phone } }),
-      this.userRepository.count({ where: { email } }),
+      this.prisma.user.findUnique({ where: { email: email } }),
+      this.prisma.user.findUnique({ where: { phone: phone } }),
     ]);
 
     if (phoneExists || emailExists) {
@@ -45,9 +43,15 @@ export class UserAuthService {
     userRegistrationDto.salt = salt;
     userRegistrationDto.password = hashedPassword;
 
+    // user data is extracted from dto and uuid is added
+    const { confirmPassword, ...userRegistrationData } = userRegistrationDto;
+    const uuid = GeneratorProvider.uuid();
+    const userData = { ...userRegistrationData, uuid };
+
     //save user data
-    const userSaveInitiate = this.userRepository.create(userRegistrationDto);
-    const user = await this.userRepository.save(userSaveInitiate);
+    const user = await this.prisma.user.create({
+      data: userData
+    });
     return await this.serializeUserProfile(user);
   }
 
@@ -58,7 +62,7 @@ export class UserAuthService {
   }
 
   async findOne(email: string) {
-    const userExists = await this.userRepository.findOne({ where: { email } });
+    const userExists = await this.prisma.user.findUnique({ where: { email } })
     if (!userExists) throw new NotFoundException(errorMessages.userNotFound);
     return userExists;
   }

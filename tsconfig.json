@@ -11,8 +11,12 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@app/*": ["src/*"],
-      "@test/*": ["test/*"],
+      "@app/*": [
+        "src/*"
+      ],
+      "@test/*": [
+        "test/*"
+      ],
       // Add more aliases as needed
     },
     "incremental": true,
