@@ -4,8 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 
 import { errorMessages } from '@app/common/constants/errorMessages';
-import { UserLoginDto } from '@app/modules/user/dto/user.login';
-import { UserAuthService } from '@app/modules/user/services/user-auth.service';
+import { UserLoginDto } from '@app/modules/user/dto/login-dto';
+import { UserAuthService } from '@app/modules/user/services/auth.service';
 import { successMessages } from '@app/common/constants/successMessages';
 import { UserSerialization } from '@app/modules/auth/serialization/user.serialization';
 
@@ -27,9 +27,14 @@ export class AuthService {
     );
 
     if (!isPasswordMatch) return { message: errorMessages.incorrectPassword };
-    const token = await this.jwtService.signAsync({ user });
+    const userObj = {
+      uuid: user.uuid,
+      role: user.role,
+      type: user.type,
+    };
+    const token = await this.jwtService.signAsync({ userObj });
     return {
-      message: successMessages.userFetched,
+      message: successMessages.userloggedIn,
       data: await this.serializeUserProfile(user),
       token,
     };

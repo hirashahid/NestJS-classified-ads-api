@@ -4,4 +4,6 @@ export const errorMessages = {
   userNotFound: 'User does not exist',
   incorrectPassword: 'Incorrect Password',
   internalServerError: 'Internal Server Error',
+  userUpdationFailed: 'Failed to update user',
+  logoutFailed: 'Logout Failed',
 };

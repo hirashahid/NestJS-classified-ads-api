@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   MinLength,
   IsEmail,
-  IsDateString,
   IsOptional,
   Matches,
 } from 'class-validator';
@@ -29,10 +28,6 @@ export class UserRegistrationDto {
   password: string;
 
   @IsString()
-  @Matches('password')
-  confirmPassword: string;
-
-  @IsString()
   @IsEnum(UserType)
   @IsOptional()
   type: UserType;
@@ -44,15 +39,14 @@ export class UserRegistrationDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(/^(009665|9665|\+9665|05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$/, {
+  @Matches(/^(?:\+92|0)[1-9]\d{9}$/, {
     message: 'Please enter a valid phone number',
   })
   phone: string;
 
-  @IsString()
   @IsNotEmpty()
   @Matches(/^\d{4}-\d{2}-\d{2}$/, {
-    message: 'birthDate must be in YYYY-MM-DD format',
+    message: 'BirthDate must be in YYYY-MM-DD format',
   })
   birthDate: string;
 

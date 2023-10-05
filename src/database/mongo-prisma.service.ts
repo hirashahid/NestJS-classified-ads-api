@@ -6,26 +6,23 @@ import {
 } from '@nestjs/common';
 import { PrismaClient as MongoPrismaClient } from '@prisma/mongo/client';
 
-
-
 @Injectable()
 export class MongoPrismaService
   extends MongoPrismaClient
-  implements OnModuleInit, OnModuleDestroy {
+  implements OnModuleInit, OnModuleDestroy
+{
   private readonly logger = new Logger(MongoPrismaService.name);
 
   async onModuleInit() {
     let retries = 5;
 
     while (retries > 0) {
-
       try {
         await this.$connect();
 
         this.logger.log('Successfully connected to mongo database');
 
         break;
-
       } catch (err) {
         this.logger.error(err);
 

@@ -1,12 +1,9 @@
-import { ConfigService } from '@nestjs/config';
-
 export const jwtFactory = {
-  useFactory: async (configService: ConfigService) => ({
+  useFactory: async () => ({
     global: true,
-    secret: configService.get('JWT.auth_token'),
+    secret: process.env.JWT_SECRET_KEY,
     signOptions: {
-      expiresIn: `${configService.get('JWT.timeout')}d`,
+      expiresIn: process.env.JWT_EXPIRY_TIME,
     },
   }),
-  inject: [ConfigService],
 };

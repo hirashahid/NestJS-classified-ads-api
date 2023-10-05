@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 import { PrismaClient as PostgresPrismaClient } from '@prisma/client';
 
-
 @Injectable()
 export class PostgresPrismaService
   extends PostgresPrismaClient
-  implements OnModuleInit, OnModuleDestroy {
+  implements OnModuleInit, OnModuleDestroy
+{
   private readonly logger = new Logger(PostgresPrismaService.name);
   async onModuleInit() {
     let retries = 5;
