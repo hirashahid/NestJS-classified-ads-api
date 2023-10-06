@@ -5,28 +5,28 @@ import {
 } from '@app/exceptions/custom.exception';
 import { errorMessages } from '@app/common/constants/errorMessages';
 import { successMessages } from '@app/common/constants/successMessages';
-import { UserUpdateDto } from '@app/modules/user/dto/update-user-dto';
 import { PostgresPrismaService } from '@app/database/postgres-prisma.service';
+import { UserUpdateDto } from '@app/modules/user/dto/updateUser.dto';
 
 @Injectable()
 export class PostgresQueriesService {
   constructor(private readonly prisma: PostgresPrismaService) {}
 
-  async createUser(data: any) {
-    return await this.prisma.user.create({
+  async createUser(model: string, data: any) {
+    return await this.prisma[model].create({
       data,
     });
   }
 
-  async findUsers(where: any, skip: number, take: number) {
-    const users = await this.prisma.user.findMany({ where, skip, take });
+  async findUsers(model: string, where: any, skip: number, take: number) {
+    const users = await this.prisma[model].findMany({ where, skip, take });
     if (users.length === 0)
       throw new NotFoundException(errorMessages.userNotFound);
     return users;
   }
 
-  async findOne(search: string) {
-    const userExists = await this.prisma.user.findFirst({
+  async findOne(model: string, search: string) {
+    const userExists = await this.prisma[model].findFirst({
       where: {
         OR: [{ email: search }, { uuid: search }],
       },
@@ -36,10 +36,10 @@ export class PostgresQueriesService {
     return userExists;
   }
 
-  async findUserByphone(email: string, phone: string) {
+  async findUserByphone(model: string, email: string, phone: string) {
     const [phoneExists, emailExists] = await Promise.all([
-      this.prisma.user.findUnique({ where: { phone } }),
-      this.prisma.user.findUnique({ where: { email } }),
+      this.prisma[model].findUnique({ where: { phone } }),
+      this.prisma[model].findUnique({ where: { email } }),
     ]);
 
     if (phoneExists || emailExists) {
@@ -49,8 +49,8 @@ export class PostgresQueriesService {
     }
   }
 
-  async updateUser(updateUserDto: UserUpdateDto, uuid: string) {
-    const updatedUser = await this.prisma.user.update({
+  async updateUser(model: string, updateUserDto: UserUpdateDto, uuid: string) {
+    const updatedUser = await this.prisma[model].update({
       where: { uuid },
       data: updateUserDto,
     });
@@ -65,9 +65,9 @@ export class PostgresQueriesService {
     };
   }
 
-  async deleteUser(uuid: string) {
+  async deleteUser(model: string, uuid: string) {
     let message;
-    await this.prisma.user
+    await this.prisma[model]
       .delete({
         where: { uuid },
       })

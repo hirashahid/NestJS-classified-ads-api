@@ -5,13 +5,14 @@ import { UserSerialization } from '@app/modules/auth/serialization/user.serializ
 import { PostgresQueriesService } from '@app/database/postgresQueries/userQueries.service';
 import { GetAllUsersQueryDto } from '@app/modules/user/dto/getAllUsers.dto';
 import { UserUpdateDto } from '@app/modules/user/dto/updateUser.dto';
+import { modelNames } from '@app/database/modelNames';
 
 @Injectable()
 export class UserAuthService {
   constructor(private readonly prismaQueries: PostgresQueriesService) {}
 
   async create(data: any) {
-    return await this.prismaQueries.createUser(data);
+    return await this.prismaQueries.createUser(modelNames.user, data);
   }
 
   async getAllUsers(query: GetAllUsersQueryDto) {
@@ -31,6 +32,7 @@ export class UserAuthService {
       : {};
 
     const users = await this.prismaQueries.findUsers(
+      modelNames.user,
       where,
       skip,
       query.paginate,
@@ -50,11 +52,11 @@ export class UserAuthService {
   }
 
   async findOne(username: string) {
-    return await this.prismaQueries.findOne(username);
+    return await this.prismaQueries.findOne(modelNames.user, username);
   }
 
   async findUserByphone(email: string, phone: string) {
-    await this.prismaQueries.findUserByphone(email, phone);
+    await this.prismaQueries.findUserByphone(modelNames.user, email, phone);
   }
 
   async findUserById(uuid: string) {
@@ -64,6 +66,7 @@ export class UserAuthService {
 
   async updateUser(updateUserDto: UserUpdateDto, uuid: string) {
     const { message, data } = await this.prismaQueries.updateUser(
+      modelNames.user,
       updateUserDto,
       uuid,
     );
@@ -74,7 +77,7 @@ export class UserAuthService {
   }
 
   async deleteUser(uuid: string) {
-    return await this.prismaQueries.deleteUser(uuid);
+    return await this.prismaQueries.deleteUser(modelNames.user, uuid);
   }
 
   async serializeUserProfile(user: any) {
