@@ -1,37 +1,24 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 
-import { DatabaseModule } from '@app/modules/database/database.module';
 import { UserModule } from '@app/modules/user/user.module';
 import { AuthModule } from '@app/modules/auth/auth.module';
 import { CustomExceptionFilter } from '@app/filters/global-exception.filter';
 import { AppController } from '@app/app.controller';
 import { AppService } from '@app/app.service';
-import { DestinationsModule } from '@app/modules/destination/destination.module';
-import { postgresConfig } from '@app/config/postgres/database.config';
-import { mongoConfig } from '@app/config/mongo/database.config';
 import { AdminModule } from '@app/modules/admin/admin.module';
+import { PostgresPrismaService } from '@app/database/postgres-prisma.service';
+import { PostgresQueriesService } from '@app/database/postgresQueries/userQueries.service';
 
 @Module({
-  imports: [
-    // PRIMARY DB CONNECTION
-    TypeOrmModule.forRootAsync({
-      useFactory: () => postgresConfig,
-    }),
-
-    // SECONDARY DB CONNECTION
-    TypeOrmModule.forRootAsync({
-      name: 'secondaryDB',
-      useFactory: () => mongoConfig,
-    }),
-    DatabaseModule,
-    UserModule,
-    AuthModule,
-    DestinationsModule,
-    AdminModule,
-  ],
+  imports: [UserModule, AuthModule, AdminModule],
   controllers: [AppController],
-  providers: [AppService, JwtService, CustomExceptionFilter],
+  providers: [
+    AppService,
+    JwtService,
+    CustomExceptionFilter,
+    PostgresQueriesService,
+    PostgresPrismaService,
+  ],
 })
 export class AppModule {}

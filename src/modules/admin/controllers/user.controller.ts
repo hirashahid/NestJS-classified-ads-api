@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 
 import { UserAuthService } from '@app/modules/user/services/auth.service';
-import { GetAllUsersQueryDto } from '@app/modules/user/dto/get-all-users-dto';
 import { JwtAuthGuard } from '@app/modules/auth/guards/auth.guard';
-import { AdminGuard } from '../guards/admin.guard';
+import { AdminGuard } from '@app/modules/admin/guards/admin.guard';
+import { GetAllUsersQueryDto } from '@app/modules/user/dto/getAllUsers.dto';
 
 @UseGuards(JwtAuthGuard, AdminGuard)
 @Controller('admin/users')

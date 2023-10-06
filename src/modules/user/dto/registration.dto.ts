@@ -15,6 +15,10 @@ export class UserRegistrationDto {
   @IsNotEmpty()
   name: string;
 
+  @IsString()
+  @IsOptional()
+  uuid: string;
+
   @IsNotEmpty()
   @IsEmail()
   email: string;
