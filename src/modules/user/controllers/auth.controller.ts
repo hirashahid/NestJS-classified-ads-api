@@ -8,7 +8,7 @@ import { UserUpdateDto } from '@app/modules/user/dto/updateUser.dto';
 @UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserAuthController {
-  constructor(private readonly userAuthService: UserAuthService) {}
+  constructor(private readonly userAuthService: UserAuthService) { }
 
   @Get('/profile')
   async getProfile(@User() user: any) {

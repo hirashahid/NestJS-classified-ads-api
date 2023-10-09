@@ -9,13 +9,14 @@ import {
 
 import { UserAuthService } from '@app/modules/user/services/auth.service';
 import { JwtAuthGuard } from '@app/modules/auth/guards/auth.guard';
+import { ApiAuthGuard } from '@app/modules/auth/guards/api-auth.guard';
 import { AdminGuard } from '@app/modules/admin/guards/admin.guard';
 import { GetAllUsersQueryDto } from '@app/modules/user/dto/getAllUsers.dto';
 
-@UseGuards(JwtAuthGuard, AdminGuard)
+@UseGuards(JwtAuthGuard, AdminGuard, ApiAuthGuard)
 @Controller('admin/users')
 export class AdminUserController {
-  constructor(private readonly userAuthService: UserAuthService) {}
+  constructor(private readonly userAuthService: UserAuthService) { }
 
   @Get()
   async getAllUsers(@Query() query: GetAllUsersQueryDto) {

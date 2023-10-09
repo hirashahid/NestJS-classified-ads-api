@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -13,11 +14,13 @@ import { AuthService } from '@app/modules/auth/services/auth.service';
 import { errorMessages } from '@app/common/constants/errorMessages';
 import { CustomException } from '@app/exceptions/custom.exception';
 import { successMessages } from '@app/common/constants/successMessages';
+import { ApiAuthGuard } from '@app/modules/auth/guards/api-auth.guard';
 import { UserRegistrationDto } from '@app/modules/user/dto/registration.dto';
 
+@UseGuards(ApiAuthGuard)
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('registration')
   async registration(

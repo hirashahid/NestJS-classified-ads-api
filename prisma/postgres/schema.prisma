@@ -25,9 +25,18 @@ model User {
   salt      String?   @db.VarChar(96)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("update_at")
-  deletedAt DateTime?
+  deletedAt DateTime? @map("deleted_at")
 
   @@map("users")
+}
+
+model Api_Key {
+  id        Int       @id @default(autoincrement())
+  token     String    @unique
+  appInfo   Json
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("update_at")
+  deletedAt DateTime? @map("deleted_at")
 }
 
 enum Gender {
