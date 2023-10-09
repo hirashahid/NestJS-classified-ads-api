@@ -14,6 +14,7 @@ export class UserUpdateDto {
   name: string;
 
   @IsString()
+  @IsOptional()
   @Matches(/^(?:\+92|0)[1-9]\d{9}$/, {
     message: 'Please enter a valid phone number',
   })

@@ -9,9 +9,10 @@ import { AppService } from '@app/app.service';
 import { AdminModule } from '@app/modules/admin/admin.module';
 import { PostgresPrismaService } from '@app/database/postgres-prisma.service';
 import { PostgresQueriesService } from '@app/database/postgresQueries/userQueries.service';
+import { DatabaseModule } from '@app/database/database.module';
 
 @Module({
-  imports: [UserModule, AuthModule, AdminModule],
+  imports: [UserModule, AuthModule, AdminModule, DatabaseModule],
   controllers: [AppController],
   providers: [
     AppService,

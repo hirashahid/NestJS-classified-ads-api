@@ -60,15 +60,15 @@ export class UserAuthService {
   }
 
   async findUserById(uuid: string) {
-    const userExists = await this.findOne(uuid);
-    return await this.serializeUserProfile(userExists);
+    const user = await this.findOne(uuid);
+    return await this.serializeUserProfile(user);
   }
 
-  async updateUser(updateUserDto: UserUpdateDto, uuid: string) {
+  async updateUser(updateUserDto: UserUpdateDto, loggedInUser: any) {
     const { message, data } = await this.prismaQueries.updateUser(
       modelNames.user,
       updateUserDto,
-      uuid,
+      loggedInUser.uuid,
     );
     return {
       message,
@@ -78,6 +78,10 @@ export class UserAuthService {
 
   async deleteUser(uuid: string) {
     return await this.prismaQueries.deleteUser(modelNames.user, uuid);
+  }
+
+  async getProfile(loggedInUser: any) {
+    return await this.serializeUserProfile(loggedInUser);
   }
 
   async serializeUserProfile(user: any) {
