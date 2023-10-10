@@ -3,6 +3,7 @@ export const successMessages = {
   userloggedIn: 'User has been logged in successfully',
   userRegistered: 'User has been registered successfully',
   userUpdatedSuccessfully: 'User has been updated succesfully',
+  passwordUpdatedSuccessfully: 'Password has been updated succesfully',
   logoutSuccessfully: 'Logout Successfully',
   userHasBeenDeleted: 'User has been deleted succesfully',
 };

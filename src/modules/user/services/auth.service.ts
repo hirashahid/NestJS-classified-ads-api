@@ -23,6 +23,7 @@ export class UserAuthService {
 
     const where = search
       ? {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           OR: [
             { name: { contains: search } },
             { email: { contains: search } },
@@ -74,6 +75,16 @@ export class UserAuthService {
       message,
       data: data ? await this.serializeUserProfile(data) : null,
     };
+  }
+
+  async updatePassword(salt, newPassword: string, loggedInUser: any) {
+    const { message } = await this.prismaQueries.updatePassword(
+      modelNames.user,
+      salt,
+      newPassword,
+      loggedInUser.uuid,
+    );
+    return { message };
   }
 
   async deleteUser(uuid: string) {

@@ -10,7 +10,9 @@ import { UserAuthService } from '@app/modules/user/services/auth.service';
 import { successMessages } from '@app/common/constants/successMessages';
 import { UserSerialization } from '@app/modules/auth/serialization/user.serialization';
 import { UserRegistrationDto } from '@app/modules/user/dto/registration.dto';
-import { GeneratorProvider } from '@app/providers/generator.provider';
+import { GeneratorProvider } from '@app/common/providers/generator.provider';
+import { PostgresQueriesService } from '@app/database/postgresQueries/userQueries.service';
+import { PasswordResetDto } from '@app/modules/user/dto/passwordReset.dto';
 
 @Dependencies(UserAuthService, JwtService)
 @Injectable()
@@ -18,6 +20,7 @@ export class AuthService {
   constructor(
     private readonly usersAuthService: UserAuthService,
     private readonly jwtService: JwtService,
+    private readonly prismaQueries: PostgresQueriesService,
   ) {}
 
   async registration(userRegistrationDto: UserRegistrationDto) {
@@ -68,6 +71,30 @@ export class AuthService {
       data: await this.serializeUserProfile(user),
       token,
     };
+  }
+
+  async resetPassword(loggedInUser: any, passwordResetDto: PasswordResetDto) {
+    const { currentPassword, newPassword } = passwordResetDto;
+    const user = await this.usersAuthService.findOne(loggedInUser.email);
+    const { salt } = user;
+    const isPasswordMatch = await bcrypt.compare(
+      currentPassword + salt,
+      user.password,
+    );
+    if (!isPasswordMatch)
+      return { message: errorMessages.incorrectCurrentPassword };
+
+    if (isPasswordMatch) {
+      const salt = crypto.randomBytes(48).toString('hex');
+      const newHashedPassword = bcrypt.hashSync(newPassword + salt, 10);
+      await this.usersAuthService.updatePassword(
+        salt,
+        newHashedPassword,
+        loggedInUser,
+      );
+    }
+
+    return { message: successMessages.passwordUpdatedSuccessfully };
   }
 
   async serializeUserProfile(user: any) {

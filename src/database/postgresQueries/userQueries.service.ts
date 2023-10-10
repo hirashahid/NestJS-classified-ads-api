@@ -28,6 +28,7 @@ export class PostgresQueriesService {
   async findOne(model: string, search: string) {
     const userExists = await this.prisma[model].findFirst({
       where: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         OR: [{ email: search }, { uuid: search }],
       },
     });
@@ -63,6 +64,28 @@ export class PostgresQueriesService {
       message,
       data: updatedUser ? updatedUser : null,
     };
+  }
+
+  async updatePassword(
+    model: string,
+    salt: string,
+    newHashedPassword: string,
+    uuid: string,
+  ) {
+    try {
+      const updatedUser = await this.prisma[model].update({
+        where: { uuid },
+        data: { salt, password: newHashedPassword },
+      });
+
+      return {
+        message: updatedUser
+          ? successMessages.userUpdatedSuccessfully
+          : errorMessages.userUpdationFailed,
+      };
+    } catch (error) {
+      return { message: error.message || errorMessages.userUpdationFailed };
+    }
   }
 
   async deleteUser(model: string, uuid: string) {

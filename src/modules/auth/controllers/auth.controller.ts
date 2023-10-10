@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Res,
+  Patch,
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -16,11 +17,14 @@ import { CustomException } from '@app/exceptions/custom.exception';
 import { successMessages } from '@app/common/constants/successMessages';
 import { ApiAuthGuard } from '@app/modules/auth/guards/api-auth.guard';
 import { UserRegistrationDto } from '@app/modules/user/dto/registration.dto';
+import { User } from '@app/decorators/user.decorator';
+import { PasswordResetDto } from '@app/modules/user/dto/passwordReset.dto';
+import { JwtAuthGuard } from '@app/modules/auth/guards/auth.guard';
 
 @UseGuards(ApiAuthGuard)
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   @Post('registration')
   async registration(
@@ -51,6 +55,19 @@ export class AuthController {
       sameSite: 'lax',
     });
     return { message, data };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('password-reset')
+  async passwordReset(
+    @User() user: any,
+    @Body() passwordResetDto: PasswordResetDto,
+  ) {
+    const { message } = await this.authService.resetPassword(
+      user,
+      passwordResetDto,
+    );
+    return { message };
   }
 
   @Post('logout')

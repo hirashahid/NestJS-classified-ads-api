@@ -1,9 +1,9 @@
-import { PostgresPrismaService } from "@app/database/postgres-prisma.service";
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { PostgresPrismaService } from '@app/database/postgres-prisma.service';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ApiAuthGuard implements CanActivate {
-  constructor(private prisma: PostgresPrismaService) { }
+  constructor(private prisma: PostgresPrismaService) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
@@ -14,14 +14,9 @@ export class ApiAuthGuard implements CanActivate {
     }
 
     const tokenExist = await this.prisma.api_Key.findUnique({
-      where: { token }
-    })
+      where: { token },
+    });
 
-    if (!tokenExist) {
-      return false;
-    }
-
-    return true;
-
+    return !!tokenExist;
   }
 }

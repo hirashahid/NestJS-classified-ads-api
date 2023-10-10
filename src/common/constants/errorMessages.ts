@@ -5,5 +5,6 @@ export const errorMessages = {
   incorrectPassword: 'Incorrect Password',
   internalServerError: 'Internal Server Error',
   userUpdationFailed: 'Failed to update user',
+  incorrectCurrentPassword: 'Incorrect Current Password',
   logoutFailed: 'Logout Failed',
 };
