@@ -14,3 +14,8 @@ export enum RoleType {
   INSPECTOR = 'Inspector',
   SUPERADMIN = 'SuperAdmin',
 }
+
+export enum VerificationType {
+  PASSWORD_RESET = 'PasswordReset',
+  REGISTRATION = 'Registration',
+}

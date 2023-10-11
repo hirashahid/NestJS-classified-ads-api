@@ -7,6 +7,7 @@ import { errorMessages } from '@app/common/constants/errorMessages';
 import { successMessages } from '@app/common/constants/successMessages';
 import { PostgresPrismaService } from '@app/database/postgres-prisma.service';
 import { UserUpdateDto } from '@app/modules/user/dto/updateUser.dto';
+import { VerificationType } from '@app/modules/user/constants/user';
 
 @Injectable()
 export class PostgresQueriesService {
@@ -89,18 +90,55 @@ export class PostgresQueriesService {
   }
 
   async deleteUser(model: string, uuid: string) {
-    let message;
-    await this.prisma[model]
+    return await this.prisma[model]
       .delete({
         where: { uuid },
       })
       .then(() => {
-        message = successMessages.userHasBeenDeleted;
+        return { message: successMessages.userHasBeenDeleted };
       })
       .catch(() => {
-        message = errorMessages.userUpdationFailed;
+        return { message: errorMessages.userUpdationFailed };
       });
+  }
 
-    return { message };
+  async createVerificationToken(
+    model: string,
+    userId: string,
+    token: string,
+    type: VerificationType,
+  ) {
+    const expiredAt = new Date();
+    expiredAt.setMinutes(expiredAt.getMinutes() + 30);
+
+    const data = { userId, type, expiredAt, value: token };
+
+    return await this.prisma[model].create({
+      data,
+    });
+  }
+
+  async findToken(model: string, uuid: string, type: VerificationType) {
+    const tokenExists = await this.prisma[model].findFirst({
+      where: {
+        userId: uuid,
+        type,
+      },
+    });
+
+    return tokenExists;
+  }
+
+  async deleteToken(model: string, value: string, userId: string) {
+    return await this.prisma[model]
+      .delete({
+        where: { value: value, userId },
+      })
+      .then(() => {
+        return { message: successMessages.tokenDeletedSuccessfully };
+      })
+      .catch(() => {
+        return { message: errorMessages.tokenDeletionFailed };
+      });
   }
 }

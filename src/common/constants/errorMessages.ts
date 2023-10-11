@@ -7,4 +7,5 @@ export const errorMessages = {
   userUpdationFailed: 'Failed to update user',
   incorrectCurrentPassword: 'Incorrect Current Password',
   logoutFailed: 'Logout Failed',
+  tokenDeletionFailed: 'Failed to delete token',
 };

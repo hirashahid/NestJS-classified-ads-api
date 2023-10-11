@@ -6,6 +6,7 @@ import { PostgresQueriesService } from '@app/database/postgresQueries/userQuerie
 import { GetAllUsersQueryDto } from '@app/modules/user/dto/getAllUsers.dto';
 import { UserUpdateDto } from '@app/modules/user/dto/updateUser.dto';
 import { modelNames } from '@app/database/modelNames';
+import { VerificationType } from '@app/modules/user/constants/user';
 
 @Injectable()
 export class UserAuthService {
@@ -99,5 +100,22 @@ export class UserAuthService {
     return plainToClass(UserSerialization, user, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async createToken(userId: string, token: string) {
+    return await this.prismaQueries.createVerificationToken(
+      modelNames.token,
+      userId,
+      token,
+      VerificationType.PASSWORD_RESET,
+    );
+  }
+
+  async findToken(model: any, uuid: string, type: VerificationType) {
+    return await this.prismaQueries.findToken(model, uuid, type);
+  }
+
+  async deleteToken(model: any, value: string, userId: string) {
+    return await this.prismaQueries.deleteToken(model, value, userId);
   }
 }

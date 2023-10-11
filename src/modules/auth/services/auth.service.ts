@@ -3,6 +3,7 @@ import { plainToClass } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
+import * as nodemailer from 'nodemailer';
 
 import { errorMessages } from '@app/common/constants/errorMessages';
 import { UserLoginDto } from '@app/modules/user/dto/login.dto';
@@ -10,6 +11,10 @@ import { UserAuthService } from '@app/modules/user/services/auth.service';
 import { successMessages } from '@app/common/constants/successMessages';
 import { UserSerialization } from '@app/modules/auth/serialization/user.serialization';
 import { UserRegistrationDto } from '@app/modules/user/dto/registration.dto';
+import mailTransport from '@app/modules/config/mail-config';
+import { ForgotPasswordDto } from '@app/modules/user/dto/forgotPassword.dto';
+import { modelNames } from '@app/database/modelNames';
+import { VerificationType } from '@app/modules/user/constants/user';
 import { GeneratorProvider } from '@app/common/providers/generator.provider';
 import { PostgresQueriesService } from '@app/database/postgresQueries/userQueries.service';
 import { PasswordResetDto } from '@app/modules/user/dto/passwordReset.dto';
@@ -101,5 +106,50 @@ export class AuthService {
     return plainToClass(UserSerialization, user, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async sendEmail(forgotPasswordDto: ForgotPasswordDto) {
+    const email = forgotPasswordDto.email;
+
+    // find if user exist
+    const user = await this.usersAuthService.findOne(email);
+    if (!user) return { message: errorMessages.userNotFound };
+
+    // find token exist against userId
+    const tokenExist = await this.usersAuthService.findToken(
+      modelNames.token,
+      user.uuid,
+      VerificationType.PASSWORD_RESET,
+    );
+
+    if (tokenExist) {
+      await this.usersAuthService.deleteToken(
+        modelNames.token,
+        tokenExist.value,
+        user.uuid,
+      );
+    }
+
+    // create token
+    const token = crypto.randomBytes(32).toString('hex');
+    await this.usersAuthService.createToken(user.uuid, token);
+
+    // send mail
+    const url = `www.classified.com/api/auth/reset-password?token=${token}`;
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Reset Password',
+      text: 'Open the link to change password : ' + url,
+    };
+
+    return await mailTransport
+      .sendMail(mailOptions)
+      .then(() => {
+        return { message: successMessages.emailSentSuccessfully };
+      })
+      .catch(() => {
+        return { message: errorMessages.internalServerError };
+      });
   }
 }

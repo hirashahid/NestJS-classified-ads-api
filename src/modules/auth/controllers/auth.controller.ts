@@ -17,6 +17,7 @@ import { CustomException } from '@app/exceptions/custom.exception';
 import { successMessages } from '@app/common/constants/successMessages';
 import { ApiAuthGuard } from '@app/modules/auth/guards/api-auth.guard';
 import { UserRegistrationDto } from '@app/modules/user/dto/registration.dto';
+import { ForgotPasswordDto } from '@app/modules/user/dto/forgotPassword.dto';
 import { User } from '@app/decorators/user.decorator';
 import { PasswordResetDto } from '@app/modules/user/dto/passwordReset.dto';
 import { JwtAuthGuard } from '@app/modules/auth/guards/auth.guard';
@@ -31,8 +32,9 @@ export class AuthController {
     @Body() userRegistration: UserRegistrationDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { message, data, token } =
-      await this.authService.registration(userRegistration);
+    const { message, data, token } = await this.authService.registration(
+      userRegistration,
+    );
     response.cookie('USER_ACCESS_TOKEN', token, {
       httpOnly: true,
       secure: false,
@@ -47,8 +49,9 @@ export class AuthController {
     @Body() userRegistration: UserLoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { data, token, message } =
-      await this.authService.login(userRegistration);
+    const { data, token, message } = await this.authService.login(
+      userRegistration,
+    );
     response.cookie('USER_ACCESS_TOKEN', token, {
       httpOnly: true,
       secure: false,
@@ -85,5 +88,11 @@ export class AuthController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Post('forget-password-initiate')
+  async sendEmail(@Body() email: ForgotPasswordDto) {
+    const message = await this.authService.sendEmail(email);
+    return { message };
   }
 }
