@@ -78,14 +78,17 @@ export class UserAuthService {
     };
   }
 
-  async updatePassword(salt, newPassword: string, loggedInUser: any) {
-    const { message } = await this.prismaQueries.updatePassword(
+  async updatePassword(
+    salt: string,
+    newHashedPassword: string,
+    loggedInUser: any,
+  ) {
+    return await this.prismaQueries.updatePassword(
       modelNames.user,
       salt,
-      newPassword,
+      newHashedPassword,
       loggedInUser.uuid,
     );
-    return { message };
   }
 
   async deleteUser(uuid: string) {
@@ -94,6 +97,10 @@ export class UserAuthService {
 
   async getProfile(loggedInUser: any) {
     return await this.serializeUserProfile(loggedInUser);
+  }
+
+  async findToken(search: string, type: VerificationType) {
+    return await this.prismaQueries.findToken(modelNames.token, search, type);
   }
 
   async serializeUserProfile(user: any) {
@@ -109,10 +116,6 @@ export class UserAuthService {
       token,
       VerificationType.PASSWORD_RESET,
     );
-  }
-
-  async findToken(model: any, uuid: string, type: VerificationType) {
-    return await this.prismaQueries.findToken(model, uuid, type);
   }
 
   async deleteToken(model: any, value: string, userId: string) {

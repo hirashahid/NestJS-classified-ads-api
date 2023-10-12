@@ -118,15 +118,17 @@ export class PostgresQueriesService {
     });
   }
 
-  async findToken(model: string, uuid: string, type: VerificationType) {
-    const tokenExists = await this.prisma[model].findFirst({
+  async findToken(model: string, search: string, type: VerificationType) {
+    const token = await this.prisma[model].findFirst({
       where: {
-        userId: uuid,
-        type,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        OR: [
+          { userId: search, type },
+          { value: search, type },
+        ],
       },
     });
-
-    return tokenExists;
+    return token;
   }
 
   async deleteToken(model: string, value: string, userId: string) {

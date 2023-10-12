@@ -8,4 +8,6 @@ export const errorMessages = {
   incorrectCurrentPassword: 'Incorrect Current Password',
   logoutFailed: 'Logout Failed',
   tokenDeletionFailed: 'Failed to delete token',
+  expiredLink: 'Your reset link has expired. Please request a new one.',
+  tokenNotFound: 'Token does not exist',
 };

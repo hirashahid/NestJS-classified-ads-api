@@ -1,6 +1,7 @@
 import { Dependencies, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
@@ -16,8 +17,9 @@ import { ForgotPasswordDto } from '@app/modules/user/dto/forgotPassword.dto';
 import { modelNames } from '@app/database/modelNames';
 import { VerificationType } from '@app/modules/user/constants/user';
 import { GeneratorProvider } from '@app/common/providers/generator.provider';
-import { PostgresQueriesService } from '@app/database/postgresQueries/userQueries.service';
 import { PasswordResetDto } from '@app/modules/user/dto/passwordReset.dto';
+import { ForgotPasswordResetDto } from '@app/modules/user/dto/forgotPasswordReset.dto';
+import { NotFoundException } from '@app/exceptions/custom.exception';
 
 @Dependencies(UserAuthService, JwtService)
 @Injectable()
@@ -25,7 +27,6 @@ export class AuthService {
   constructor(
     private readonly usersAuthService: UserAuthService,
     private readonly jwtService: JwtService,
-    private readonly prismaQueries: PostgresQueriesService,
   ) {}
 
   async registration(userRegistrationDto: UserRegistrationDto) {
@@ -98,8 +99,49 @@ export class AuthService {
         loggedInUser,
       );
     }
-
     return { message: successMessages.passwordUpdatedSuccessfully };
+  }
+
+  async verifyToken(token: string, res: Response) {
+    const tokenExists = await this.usersAuthService.findToken(
+      token,
+      VerificationType.PASSWORD_RESET,
+    );
+
+    if (!tokenExists) {
+      throw new NotFoundException(errorMessages.tokenNotFound);
+    }
+    const { createdAt } = tokenExists;
+    createdAt.setMinutes(createdAt.getMinutes() + 30);
+    if (createdAt <= new Date()) res.redirect('https://www.google.com');
+    else res.redirect('https://www.yahoo.com');
+  }
+
+  async resetForgotPassword(
+    token: string,
+    forgotPasswordResetDto: ForgotPasswordResetDto,
+  ) {
+    const tokenExists = await this.usersAuthService.findToken(
+      token,
+      VerificationType.PASSWORD_RESET,
+    );
+    if (!tokenExists) throw new NotFoundException(errorMessages.tokenNotFound);
+
+    const salt = crypto.randomBytes(48).toString('hex');
+    const newHashedPassword = bcrypt.hashSync(
+      forgotPasswordResetDto.newPassword + salt,
+      10,
+    );
+    const user = await this.usersAuthService.findOne(tokenExists.userId);
+
+    await this.usersAuthService.updatePassword(salt, newHashedPassword, user);
+    await this.usersAuthService.deleteToken(
+      modelNames.token,
+      tokenExists.value,
+      tokenExists.userId,
+    );
+
+    return successMessages.passwordUpdatedSuccessfully;
   }
 
   async serializeUserProfile(user: any) {
@@ -117,7 +159,6 @@ export class AuthService {
 
     // find token exist against userId
     const tokenExist = await this.usersAuthService.findToken(
-      modelNames.token,
       user.uuid,
       VerificationType.PASSWORD_RESET,
     );
