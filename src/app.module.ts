@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { UserModule } from '@app/modules/user/user.module';
 import { AuthModule } from '@app/modules/auth/auth.module';
@@ -12,7 +13,13 @@ import { PostgresQueriesService } from '@app/database/postgresQueries/userQuerie
 import { DatabaseModule } from '@app/database/database.module';
 
 @Module({
-  imports: [UserModule, AuthModule, AdminModule, DatabaseModule],
+  imports: [
+    UserModule,
+    AuthModule,
+    AdminModule,
+    DatabaseModule,
+    ScheduleModule.forRoot(),
+  ],
   controllers: [AppController],
   providers: [
     AppService,

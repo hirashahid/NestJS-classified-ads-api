@@ -131,10 +131,23 @@ export class PostgresQueriesService {
     return token;
   }
 
-  async deleteToken(model: string, value: string, userId: string) {
+  async deleteOneToken(model: string, token: string, userId: string) {
     return await this.prisma[model]
       .delete({
-        where: { value: value, userId },
+        where: { value: token, userId },
+      })
+      .then(() => {
+        return { message: successMessages.tokenDeletedSuccessfully };
+      })
+      .catch(() => {
+        return { message: errorMessages.tokenDeletionFailed };
+      });
+  }
+
+  async deleteManyTokens(model: string, expiryDate: Date) {
+    return await this.prisma[model]
+      .deleteMany({
+        where: { createdAt: { lt: expiryDate } },
       })
       .then(() => {
         return { message: successMessages.tokenDeletedSuccessfully };

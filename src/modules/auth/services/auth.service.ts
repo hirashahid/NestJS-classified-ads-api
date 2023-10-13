@@ -135,7 +135,7 @@ export class AuthService {
     const user = await this.usersAuthService.findOne(tokenExists.userId);
 
     await this.usersAuthService.updatePassword(salt, newHashedPassword, user);
-    await this.usersAuthService.deleteToken(
+    await this.usersAuthService.deleteOneToken(
       modelNames.token,
       tokenExists.value,
       tokenExists.userId,
@@ -164,7 +164,7 @@ export class AuthService {
     );
 
     if (tokenExist) {
-      await this.usersAuthService.deleteToken(
+      await this.usersAuthService.deleteOneToken(
         modelNames.token,
         tokenExist.value,
         user.uuid,
@@ -187,10 +187,10 @@ export class AuthService {
     return await mailTransport
       .sendMail(mailOptions)
       .then(() => {
-        return { message: successMessages.emailSentSuccessfully };
+        return successMessages.emailSentSuccessfully;
       })
       .catch(() => {
-        return { message: errorMessages.internalServerError };
+        return errorMessages.internalServerError;
       });
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 import { UserSerialization } from '@app/modules/auth/serialization/user.serialization';
 import { PostgresQueriesService } from '@app/database/postgresQueries/userQueries.service';
@@ -11,6 +12,12 @@ import { VerificationType } from '@app/modules/user/constants/user';
 @Injectable()
 export class UserAuthService {
   constructor(private readonly prismaQueries: PostgresQueriesService) {}
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async handleCron() {
+    const today = new Date();
+    this.deleteManyTokens(modelNames.token, today);
+  }
 
   async create(data: any) {
     return await this.prismaQueries.createUser(modelNames.user, data);
@@ -103,12 +110,6 @@ export class UserAuthService {
     return await this.prismaQueries.findToken(modelNames.token, search, type);
   }
 
-  async serializeUserProfile(user: any) {
-    return plainToClass(UserSerialization, user, {
-      excludeExtraneousValues: true,
-    });
-  }
-
   async createToken(userId: string, token: string) {
     return await this.prismaQueries.createVerificationToken(
       modelNames.token,
@@ -118,7 +119,17 @@ export class UserAuthService {
     );
   }
 
-  async deleteToken(model: any, value: string, userId: string) {
-    return await this.prismaQueries.deleteToken(model, value, userId);
+  async deleteOneToken(model: any, token: string, userId: string) {
+    return await this.prismaQueries.deleteOneToken(model, token, userId);
+  }
+
+  async deleteManyTokens(model: any, expiryDate: Date) {
+    return await this.prismaQueries.deleteManyTokens(model, expiryDate);
+  }
+
+  async serializeUserProfile(user: any) {
+    return plainToClass(UserSerialization, user, {
+      excludeExtraneousValues: true,
+    });
   }
 }

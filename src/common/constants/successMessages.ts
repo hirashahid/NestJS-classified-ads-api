@@ -6,6 +6,6 @@ export const successMessages = {
   passwordUpdatedSuccessfully: 'Password has been updated succesfully',
   logoutSuccessfully: 'Logout Successfully',
   userHasBeenDeleted: 'User has been deleted succesfully',
-  emailSentSuccessfully: 'Email send successfully',
-  tokenDeletedSuccessfully: 'Token deleted successfully',
+  emailSentSuccessfully: 'Email has been sent successfully',
+  tokenDeletedSuccessfully: 'Token has been deleted successfully',
 };
