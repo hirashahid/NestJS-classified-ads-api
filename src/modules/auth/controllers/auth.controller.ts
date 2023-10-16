@@ -29,6 +29,7 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
   loginResponse,
@@ -79,6 +80,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('password-reset')
+  @ApiOkResponse({ description: 'Password has been updated succesfully' })
+  @ApiUnauthorizedResponse({ description: 'Incorrect Current Password' })
   async passwordReset(
     @User() user: any,
     @Body() passwordResetDto: PasswordResetDto,
