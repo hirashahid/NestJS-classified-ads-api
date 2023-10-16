@@ -107,7 +107,7 @@ export class AuthService {
   async verifyToken(token: string, res: Response) {
     const tokenExists = await this.usersAuthService.findToken(
       token,
-      VerificationType.PASSWORD_RESET,
+      VerificationType.TOKEN,
     );
 
     if (!tokenExists) {
@@ -125,7 +125,7 @@ export class AuthService {
   ) {
     const tokenExists = await this.usersAuthService.findToken(
       token,
-      VerificationType.PASSWORD_RESET,
+      VerificationType.TOKEN,
     );
     if (!tokenExists) throw new NotFoundException(errorMessages.tokenNotFound);
 
@@ -162,7 +162,7 @@ export class AuthService {
     // find token exist against userId
     const tokenExist = await this.usersAuthService.findToken(
       user.uuid,
-      VerificationType.PASSWORD_RESET,
+      VerificationType.TOKEN,
     );
 
     if (tokenExist) {

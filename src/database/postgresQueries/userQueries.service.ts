@@ -108,10 +108,7 @@ export class PostgresQueriesService {
     token: string,
     type: VerificationType,
   ) {
-    const expiredAt = new Date();
-    expiredAt.setMinutes(expiredAt.getMinutes() + 30);
-
-    const data = { userId, type, expiredAt, value: token };
+    const data = { userId, type, value: token };
 
     return await this.prisma[model].create({
       data,

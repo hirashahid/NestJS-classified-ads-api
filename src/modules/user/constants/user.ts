@@ -16,6 +16,6 @@ export enum RoleType {
 }
 
 export enum VerificationType {
-  PASSWORD_RESET = 'PasswordReset',
-  REGISTRATION = 'Registration',
+  TOKEN = 'Token',
+  OTP = 'OTP',
 }

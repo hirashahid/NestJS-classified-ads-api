@@ -115,7 +115,7 @@ export class UserAuthService {
       modelNames.token,
       userId,
       token,
-      VerificationType.PASSWORD_RESET,
+      VerificationType.TOKEN,
     );
   }
 
