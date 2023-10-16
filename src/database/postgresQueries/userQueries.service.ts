@@ -98,7 +98,7 @@ export class PostgresQueriesService {
         return { message: successMessages.userHasBeenDeleted };
       })
       .catch(() => {
-        return { message: errorMessages.userUpdationFailed };
+        return { message: errorMessages.userNotFound };
       });
   }
 

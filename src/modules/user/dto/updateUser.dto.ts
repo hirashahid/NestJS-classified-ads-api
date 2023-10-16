@@ -7,12 +7,15 @@ import {
 } from 'class-validator';
 
 import { Gender } from '@app/modules/user/constants/user';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UserUpdateDto {
+  @ApiProperty()
   @IsString()
   @IsOptional()
   name: string;
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   @Matches(/^(?:\+92|0)[1-9]\d{9}$/, {
@@ -20,6 +23,7 @@ export class UserUpdateDto {
   })
   phone: string;
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   @IsDateString()
@@ -28,11 +32,13 @@ export class UserUpdateDto {
   })
   birthDate: string;
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   @IsEnum(Gender)
   gender: Gender;
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   address: string;

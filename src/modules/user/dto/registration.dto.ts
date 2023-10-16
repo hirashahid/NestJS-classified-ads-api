@@ -9,8 +9,12 @@ import {
 } from 'class-validator';
 
 import { Gender, RoleType, UserType } from '@app/modules/user/constants/user';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UserRegistrationDto {
+  @ApiProperty({
+    example: 'Jhon Doe',
+  })
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -19,10 +23,16 @@ export class UserRegistrationDto {
   @IsOptional()
   uuid: string;
 
+  @ApiProperty({
+    example: 'JhonDoe@test.com',
+  })
   @IsNotEmpty()
   @IsEmail()
   email: string;
 
+  @ApiProperty({
+    minLength: 8,
+  })
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
@@ -31,16 +41,27 @@ export class UserRegistrationDto {
   })
   password: string;
 
+  @ApiProperty({
+    enum: UserType,
+    enumName: 'UserType',
+    required: true,
+  })
   @IsString()
   @IsEnum(UserType)
   @IsOptional()
   type: UserType;
 
+  @ApiProperty({
+    enum: RoleType,
+    enumName: 'RoleType',
+    required: true,
+  })
   @IsString()
   @IsEnum(RoleType)
   @IsOptional()
   role: RoleType;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Matches(/^(?:\+92|0)[1-9]\d{9}$/, {
@@ -48,17 +69,26 @@ export class UserRegistrationDto {
   })
   phone: string;
 
+  @ApiProperty({
+    example: '1999-12-15',
+  })
   @IsNotEmpty()
   @Matches(/^\d{4}-\d{2}-\d{2}$/, {
     message: 'BirthDate must be in YYYY-MM-DD format',
   })
   birthDate: string;
 
+  @ApiProperty({
+    enum: Gender,
+    enumName: 'Gender',
+    required: true,
+  })
   @IsString()
   @IsOptional()
   @IsEnum(Gender)
   gender: Gender;
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   address: string;
