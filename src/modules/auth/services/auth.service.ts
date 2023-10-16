@@ -19,7 +19,10 @@ import { VerificationType } from '@app/modules/user/constants/user';
 import { GeneratorProvider } from '@app/common/providers/generator.provider';
 import { PasswordResetDto } from '@app/modules/user/dto/passwordReset.dto';
 import { ForgotPasswordResetDto } from '@app/modules/user/dto/forgotPasswordReset.dto';
-import { NotFoundException } from '@app/exceptions/custom.exception';
+import {
+  IncorrectPassword,
+  NotFoundException,
+} from '@app/exceptions/custom.exception';
 
 @Dependencies(UserAuthService, JwtService)
 @Injectable()
@@ -88,8 +91,7 @@ export class AuthService {
       user.password,
     );
     if (!isPasswordMatch)
-      return { message: errorMessages.incorrectCurrentPassword };
-
+      throw new IncorrectPassword(errorMessages.incorrectCurrentPassword);
     if (isPasswordMatch) {
       const salt = crypto.randomBytes(48).toString('hex');
       const newHashedPassword = bcrypt.hashSync(newPassword + salt, 10);

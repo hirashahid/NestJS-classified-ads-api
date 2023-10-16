@@ -17,3 +17,9 @@ export class EmailAlreadyExistsException extends HttpException {
     super(message, HttpStatus.CONFLICT);
   }
 }
+
+export class IncorrectPassword extends HttpException {
+  constructor(message: string) {
+    super(message, HttpStatus.UNAUTHORIZED);
+  }
+}
