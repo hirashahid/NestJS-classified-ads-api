@@ -13,7 +13,6 @@ import { ApiAuthGuard } from '@app/modules/auth/guards/api-auth.guard';
 import { AdminGuard } from '@app/modules/admin/guards/admin.guard';
 import { GetAllUsersQueryDto } from '@app/modules/user/dto/getAllUsers.dto';
 import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
-import { userDataResponse } from '@app/swagger-docs/response-data-example';
 import { userProfileResponse } from '@app/swagger-docs/user-docs';
 
 @UseGuards(JwtAuthGuard, AdminGuard, ApiAuthGuard)

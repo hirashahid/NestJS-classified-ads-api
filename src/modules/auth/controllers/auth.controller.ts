@@ -48,9 +48,8 @@ export class AuthController {
     @Body() userRegistration: UserRegistrationDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { message, data, token } = await this.authService.registration(
-      userRegistration,
-    );
+    const { message, data, token } =
+      await this.authService.registration(userRegistration);
     response.cookie('USER_ACCESS_TOKEN', token, {
       httpOnly: true,
       secure: false,
@@ -67,9 +66,8 @@ export class AuthController {
     @Body() userRegistration: UserLoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const { data, token, message } = await this.authService.login(
-      userRegistration,
-    );
+    const { data, token, message } =
+      await this.authService.login(userRegistration);
     response.cookie('USER_ACCESS_TOKEN', token, {
       httpOnly: true,
       secure: false,

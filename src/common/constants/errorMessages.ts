@@ -10,4 +10,6 @@ export const errorMessages = {
   tokenDeletionFailed: 'Failed to delete token',
   expiredLink: 'Your reset link has expired. Please request a new one.',
   tokenNotFound: 'Token does not exist',
+  productNotFound: 'Product does not exist',
+  errorWhileCreating: 'Error while creating',
 };

@@ -8,8 +8,38 @@ datasource db {
   url      = env("MONGO_DATABASE_URL")
 }
 
-model User {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  email String  @unique
-  name  String?
+model Feature {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  uuid              String  @unique
+  productId         String  @map("product_id") @db.ObjectId
+  color             String?
+  protection        String?
+  storage           String?
+  battery           String?
+  processor         String?
+  weight            String?
+  size              String?
+  resolution        String? // Display resolution
+  network           String? // Supported network technology (e.g., 5G, 4G)
+  operatingSystem   String? @map("operating_system")
+  screenSize        String? @map("screen_size")
+  mainCamera        String? @map("main_camera")
+  frontCamera       String? @map("front_camera")
+  refreshRate       String? @map("refresh_rate")
+  ingressProtection String? @map("ingress_protection")
+  chargingSpeed     String? @map("charging_speed")
+  simSupport        String? @map("sim_support")
+  product           Product @relation(fields: [productId], references: [id])
+}
+
+model Product {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  uuid        String    @unique
+  name        String
+  description String
+  price       Float
+  category    String
+  tags        String[]
+  userId      Int       @map("user_id")
+  features    Feature[]
 }

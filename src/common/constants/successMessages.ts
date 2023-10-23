@@ -8,4 +8,5 @@ export const successMessages = {
   userHasBeenDeleted: 'User has been deleted succesfully',
   emailSentSuccessfully: 'Email has been sent successfully',
   tokenDeletedSuccessfully: 'Token has been deleted successfully',
+  productHasBeenCreated: 'Product has been created succesfully',
 };
