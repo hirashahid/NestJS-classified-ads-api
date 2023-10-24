@@ -9,10 +9,6 @@ import { FeatureDTO } from '@app/modules/product/dto/feature.dto';
 
 export class CreateProductDTO {
   @IsString()
-  @IsOptional()
-  uuid: string;
-
-  @IsString()
   name: string;
 
   @IsString()

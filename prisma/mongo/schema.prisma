@@ -10,7 +10,6 @@ datasource db {
 
 model Feature {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  uuid              String  @unique
   productId         String  @map("product_id") @db.ObjectId
   color             String?
   protection        String?
@@ -34,7 +33,6 @@ model Feature {
 
 model Product {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  uuid        String    @unique
   name        String
   description String
   price       Float

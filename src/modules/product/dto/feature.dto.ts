@@ -3,10 +3,6 @@ import { IsString, IsOptional } from 'class-validator';
 export class FeatureDTO {
   @IsString()
   @IsOptional()
-  uuid: string;
-
-  @IsString()
-  @IsOptional()
   productId: string;
 
   @IsString()
