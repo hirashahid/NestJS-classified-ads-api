@@ -9,34 +9,56 @@ datasource db {
 }
 
 model Feature {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  productId         String  @map("product_id") @db.ObjectId
-  color             String?
-  protection        String?
-  storage           String?
-  battery           String?
-  processor         String?
-  weight            String?
-  size              String?
-  resolution        String? // Display resolution
-  network           String? // Supported network technology (e.g., 5G, 4G)
-  operatingSystem   String? @map("operating_system")
-  screenSize        String? @map("screen_size")
-  mainCamera        String? @map("main_camera")
-  frontCamera       String? @map("front_camera")
-  refreshRate       String? @map("refresh_rate")
-  ingressProtection String? @map("ingress_protection")
-  chargingSpeed     String? @map("charging_speed")
-  simSupport        String? @map("sim_support")
-  product           Product @relation(fields: [productId], references: [id])
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId           String   @map("product_id") @db.ObjectId
+  // General Features
+  simSupport          String?  @map("sim_support")
+  dimensions          String?
+  weight              String?
+  operatingSystem     String?  @map("operating_system")
+  // Display
+  screenSize          String?  @map("screen_size")
+  screenResolution    String?  @map("screen_resolution")
+  screenType          String?  @map("screen_type")
+  screenProtection    String?  @map("screen_protection")
+  // Memory
+  memory              String?
+  ram                 String?
+  // Performance
+  processor           String?
+  gpu                 String?
+  // Battery
+  type                String?
+  // Camera
+  frontCamera         String?  @map("front_camera")
+  frontFlashLight     String?  @map("front_flash_light")
+  frontVideoRecording String?  @map("front_video_recording")
+  backFlashLight      String?  @map("back_flash_light")
+  backCamera          String?  @map("back_camera")
+  backVideoRecording  String?  @map("back_video_recording")
+  // Connectivity
+  bluetooth           String?
+  network             String? // Supported network technology (e.g., 5G, 4G)
+  Radio               String?
+  wifi                String?
+  nfc                 String?
+  battery             String?
+  refreshRate         String?  @map("refresh_rate")
+  ingressProtection   String?  @map("ingress_protection")
+  chargingSpeed       String?  @map("charging_speed")
+  ptaApproved         Boolean? @map("pta_approved")
+  product             Product  @relation(fields: [productId], references: [id])
 }
 
 model Product {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String
+  color       String?
   price       Float
   category    String
+  brand       String
+  location    String
   tags        String[]
   userId      Int       @map("user_id")
   features    Feature[]

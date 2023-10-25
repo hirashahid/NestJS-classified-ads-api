@@ -14,11 +14,20 @@ export class CreateProductDTO {
   @IsString()
   description: string;
 
+  @IsString()
+  color: string;
+
   @IsNumber()
   price: number;
 
   @IsString()
   category: string;
+
+  @IsString()
+  brand: string;
+
+  @IsString()
+  location: string;
 
   @IsArray()
   tags: string[];

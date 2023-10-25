@@ -22,21 +22,58 @@ export class ProductQueriesService {
   }
 
   async getProducts(model: string, query: FilterProductDTO) {
+    const { search, sort, price, brands } = query;
+    const brandsArray = brands.split(',').map((brand) => brand.trim());
+
     query.paginate = query.paginate ? query.paginate : 15;
     query.page = query.page ? query.page : 1;
     const skip = (query.page - 1) * query.paginate;
 
+    const orderBy: { price?: 'asc' | 'desc' } =
+      sort === 'lowToHigh'
+        ? { price: 'asc' }
+        : sort === 'highToLow'
+        ? { price: 'desc' }
+        : {};
+
+    let minPrice, maxPrice;
+    if (price) {
+      const priceRange = price.split('-');
+      if (priceRange.length === 2) {
+        minPrice = parseFloat(priceRange[0]);
+        maxPrice = parseFloat(priceRange[1]);
+      }
+    }
+
     const products = await this.mongoPrisma[model].findMany({
+      where: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        AND: [
+          search
+            ? {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                OR: [
+                  { name: { contains: search, mode: 'insensitive' } },
+                  { brand: { contains: search, mode: 'insensitive' } },
+                  { location: { contains: search, mode: 'insensitive' } },
+                ],
+              }
+            : undefined,
+          minPrice ? { price: { gte: minPrice } } : undefined,
+          maxPrice ? { price: { lte: maxPrice } } : undefined,
+          brandsArray.length > 0 ? { brand: { in: brandsArray } } : undefined,
+        ].filter(Boolean),
+      },
+      orderBy,
       include: {
         features: true,
       },
-      skip: skip,
+      skip,
       take: query.paginate,
     });
 
     return {
       data: products,
-      total: products?.length,
       meta: {
         total: products?.length,
         currentPage: query.page,

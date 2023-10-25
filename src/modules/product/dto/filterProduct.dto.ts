@@ -1,11 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsNumber, Min, IsString } from 'class-validator';
-
-export class FilterProductFilterDTO {
-  @IsOptional()
-  @IsString()
-  search?: string;
-}
+import { IsOptional, IsNumber, Min } from 'class-validator';
 
 export class FilterProductDTO {
   // paginate
@@ -23,9 +17,14 @@ export class FilterProductDTO {
   page?: number;
 
   @IsOptional()
-  @Type(() => FilterProductFilterDTO)
-  filter?: FilterProductFilterDTO;
+  sort?: string;
 
   @IsOptional()
-  sort?: string;
+  search?: string;
+
+  @IsOptional()
+  price?: string;
+
+  @IsOptional()
+  brands?: string;
 }
