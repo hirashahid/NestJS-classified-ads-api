@@ -13,7 +13,7 @@ export class ApiAuthGuard implements CanActivate {
       return false;
     }
 
-    const tokenExist = await this.prisma.api_Key.findUnique({
+    const tokenExist = await this.prisma.apiKey.findUnique({
       where: { token },
     });
 

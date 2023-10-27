@@ -26,5 +26,5 @@ export class FilterProductDTO {
   price?: string;
 
   @IsOptional()
-  brands?: string;
+  brands?: any;
 }

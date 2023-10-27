@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 // execute this file bu running command: pnpm run seed
 async function main() {
   for (const apiKey of API_KEYS) {
-    await prisma.api_Key.create({
+    await prisma.apiKey.create({
       data: apiKey,
     });
   }

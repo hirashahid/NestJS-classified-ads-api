@@ -23,7 +23,9 @@ export class ProductQueriesService {
 
   async getProducts(model: string, query: FilterProductDTO) {
     const { search, sort, price, brands } = query;
-    const brandsArray = brands.split(',').map((brand) => brand.trim());
+    let brandsArray;
+    if (brands?.includes(','))
+      brandsArray = brands?.split(',').map((brand) => brand.trim());
 
     query.paginate = query.paginate ? query.paginate : 15;
     query.page = query.page ? query.page : 1;
@@ -61,7 +63,9 @@ export class ProductQueriesService {
             : undefined,
           minPrice ? { price: { gte: minPrice } } : undefined,
           maxPrice ? { price: { lte: maxPrice } } : undefined,
-          brandsArray.length > 0 ? { brand: { in: brandsArray } } : undefined,
+          brandsArray?.length > 0 || brands?.length
+            ? { brand: { in: brandsArray || [brands] } }
+            : undefined,
         ].filter(Boolean),
       },
       orderBy,
