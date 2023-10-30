@@ -29,6 +29,10 @@ export class CreateProductDTO {
   @IsString()
   location: string;
 
+  @IsString()
+  @IsOptional()
+  image: string;
+
   @IsArray()
   tags: string[];
 

@@ -27,4 +27,19 @@ export class FilterProductDTO {
 
   @IsOptional()
   brands?: any;
+
+  @IsOptional()
+  backCamera?: number;
+
+  @IsOptional()
+  memory?: number;
+
+  @IsOptional()
+  ram?: number;
+
+  @IsOptional()
+  screenSize?: any;
+
+  @IsOptional()
+  category?: string;
 }

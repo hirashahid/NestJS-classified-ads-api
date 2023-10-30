@@ -17,7 +17,7 @@ model Feature {
   weight              String?
   operatingSystem     String?  @map("operating_system")
   // Display
-  screenSize          String?  @map("screen_size")
+  screenSize          Float?   @map("screen_size")
   screenResolution    String?  @map("screen_resolution")
   screenType          String?  @map("screen_type")
   screenProtection    String?  @map("screen_protection")
@@ -57,6 +57,7 @@ model Product {
   color       String?
   price       Float
   category    String
+  image       String?
   brand       String
   location    String
   tags        String[]

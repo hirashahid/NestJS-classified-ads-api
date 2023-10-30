@@ -22,7 +22,18 @@ export class ProductQueriesService {
   }
 
   async getProducts(model: string, query: FilterProductDTO) {
-    const { search, sort, price, brands } = query;
+    const {
+      search,
+      sort,
+      price,
+      brands,
+      backCamera,
+      memory,
+      ram,
+      screenSize,
+      category,
+    } = query;
+
     let brandsArray;
     if (brands?.includes(','))
       brandsArray = brands?.split(',').map((brand) => brand.trim());
@@ -47,6 +58,15 @@ export class ProductQueriesService {
       }
     }
 
+    let minScreenSize, maxScreenSize;
+    if (screenSize) {
+      const screenSizeRange = screenSize.split('-');
+      if (screenSizeRange.length === 2) {
+        minScreenSize = parseFloat(screenSizeRange[0]);
+        maxScreenSize = parseFloat(screenSizeRange[1]);
+      }
+    }
+
     const products = await this.mongoPrisma[model].findMany({
       where: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -61,6 +81,7 @@ export class ProductQueriesService {
                 ],
               }
             : undefined,
+          { category: category },
           minPrice ? { price: { gte: minPrice } } : undefined,
           maxPrice ? { price: { lte: maxPrice } } : undefined,
           brandsArray?.length > 0 || brands?.length
@@ -70,19 +91,38 @@ export class ProductQueriesService {
       },
       orderBy,
       include: {
-        features: true,
+        features: {
+          where: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            AND: [
+              { backCamera: backCamera },
+              { memory: memory },
+              { ram: ram },
+              minScreenSize
+                ? { screenSize: { gte: minScreenSize } }
+                : undefined,
+              maxScreenSize
+                ? { screenSize: { lte: maxScreenSize } }
+                : undefined,
+            ].filter(Boolean),
+          },
+        },
       },
       skip,
       take: query.paginate,
     });
 
+    const filteredProducts = products.filter(
+      (product) => product.features.length > 0,
+    );
+
     return {
-      data: products,
+      data: filteredProducts,
       meta: {
-        total: products?.length,
+        total: filteredProducts?.length,
         currentPage: query.page,
         eachPage: query.paginate,
-        lastPage: Math.ceil(products?.length / query.paginate),
+        lastPage: Math.ceil(filteredProducts?.length / query.paginate),
       },
     };
   }
